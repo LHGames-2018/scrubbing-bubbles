@@ -26,7 +26,7 @@ namespace LHGames.Bot
         /***** PATHFINDING ******/
         private bool arrivedAtDestination;
 
-        private bool MOVEBITCH = true;
+        private int moveCounter = 0;
 
         /// <summary>
         /// Gets called before ExecuteTurn. This is where you get your bot's state.
@@ -45,11 +45,13 @@ namespace LHGames.Bot
         /// <returns>The action you wish to execute.</returns>
         internal string ExecuteTurn(Map map, IEnumerable<IPlayer> visiblePlayers)
         {
-            if (MOVEBITCH)
+            if (moveCounter == 10)
             {
-                MOVEBITCH = false;
+                moveCounter = 0;
                 return AIHelper.CreateMoveAction(new Point(0, 1));
             }
+
+            moveCounter++;
 
             if (PlayerInfo.CarriedResources >= PlayerInfo.CarryingCapacity)
             {
