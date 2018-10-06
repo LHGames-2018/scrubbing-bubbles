@@ -13,6 +13,7 @@ namespace LHGames.Bot
         private int randomDirection;
         private int randomDistance;
         private int distanceTravelled;
+        bool moving = false;
         internal Bot() { 
             
         }
@@ -34,40 +35,47 @@ namespace LHGames.Bot
         /// <returns>The action you wish to execute.</returns>
         internal string ExecuteTurn(Map map, IEnumerable<IPlayer> visiblePlayers)
         {
-            // if(!this.foundResource){
-            //     for(int i = PlayerInfo.Position.X - 100; i < PlayerInfo.Position.X + 100; i++){
-            //         for(int j = PlayerInfo.Position.Y - 100; j < PlayerInfo.Position.Y + 100; i++){
-            //             if(map.GetTileAt(i, j) == TileContent.Resource){
-            //                 resourcePoint = new Point(i, j);
-            //                 foundResource = true;
-            //             }
-            //         }
-            //     }
-
-            // }
-
-            // if(resourcePoint.X != PlayerInfo.Position.X && foundResource){
-            //     int diffX = resourcePoint.X - PlayerInfo.Position.X;
-            //     return AIHelper.CreateMoveAction(new Point(diffX, 0));
-
-            // }
-
-            // if(resourcePoint.Y != PlayerInfo.Position.Y && foundResource){
-            //     int diffY = resourcePoint.Y - PlayerInfo.Position.Y;
-            //     return AIHelper.CreateMoveAction(new Point(0, diffY));
-
-            // }
-            // TODO: Implement your AI here.
+            Console.WriteLine("execute turn");
             if (map.GetTileAt(PlayerInfo.Position.X + _currentDirection, PlayerInfo.Position.Y) == TileContent.Wall)
             {
                 _currentDirection *= -1;
+                distanceTravelled = 0;
+                moving = false;
             }
 
+            if(!moving){
+                Random rnd = new Random();
+                randomDirection = rnd.Next(1,5);
+                randomDistance = rnd.Next(1,3);
+                moving = true;
+            }
             
+            if(moving){
+                Console.WriteLine("moving");
+                switch(randomDirection){
+                    case 1:
+                        distanceTravelled++;
+                        return AIHelper.CreateMoveAction(new Point(1, 0));
+                    case 2:
+                        distanceTravelled++;
+                        return AIHelper.CreateMoveAction(new Point(-1, 0));
+                    case 3:
+                        distanceTravelled++;
+                        return AIHelper.CreateMoveAction(new Point(0, 1));
+                    case 4:
+                        distanceTravelled++;
+                        return AIHelper.CreateMoveAction(new Point(0, -1));    
+                }
+            }
+
+            if(distanceTravelled >= randomDistance){
+                moving = false;
+                distanceTravelled = 0;
+            }
 
             var data = StorageHelper.Read<TestClass>("Test");
             Console.WriteLine(data?.Test);
-            return AIHelper.CreateMoveAction(new Point(0, 1));
+            return AIHelper.CreateMoveAction(new Point(0,-1));
         }
 
         /// <summary>
