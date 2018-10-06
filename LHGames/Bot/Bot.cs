@@ -36,11 +36,28 @@ namespace LHGames.Bot
                 _currentDirection *= -1;
             }
 
-            IErnumerable tilecontents = CheckCurrentTileContentAround(map);
-            switch (tilecontent)
+            // check adjacent tiles contents
+            Dictionary<Point, TileContent> tileContents = new Dictionary<Point, TileContent>();
+
+            var x = PlayerInfo.Position.X;
+            var y = PlayerInfo.Position.Y;
+
+            //todo check if x and y are null
+            try
             {
-                case TileContent.Resource:
-                    break;
+                tileContents.Add(new Point(x + 1, y), map.GetTileAt(x + 1, y));
+                tileContents.Add(new Point(x - 1, y), map.GetTileAt(x - 1, y));
+                tileContents.Add(new Point(x, y + 1), map.GetTileAt(x, y + 1));
+                tileContents.Add(new Point(x, y - 1), map.GetTileAt(x, y - 1));
+            }
+            catch (Exception)
+            {
+                // do nothing this turn
+            }
+            
+            if (tileContents.ContainsValue(TileContent.Resource))
+            {
+                AIHelper.CreateCollectAction()
             }
 
             var data = StorageHelper.Read<TestClass>("Test");
@@ -53,14 +70,6 @@ namespace LHGames.Bot
         /// </summary>
         internal void AfterTurn()
         {
-        }
-
-        internal IEnumerable<TileContent> CheckCurrentTileContentAround(Map map)
-        {
-            yield return map.GetTileAt(PlayerInfo.Position.X + 1, PlayerInfo.Position.Y);
-            yield return map.GetTileAt(PlayerInfo.Position.X - 1, PlayerInfo.Position.Y);
-            yield return map.GetTileAt(PlayerInfo.Position.X, PlayerInfo.Position.Y + 1);
-            yield return map.GetTileAt(PlayerInfo.Position.X, PlayerInfo.Position.Y - 1);
         }
     }
 }
