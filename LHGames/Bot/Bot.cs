@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using LHGames.Helper;
 
 namespace LHGames.Bot
@@ -54,10 +55,9 @@ namespace LHGames.Bot
             {
                 // do nothing this turn
             }
-            
-            if (tileContents.ContainsValue(TileContent.Resource))
+
+            foreach (var res in tileContents.Where(kvp => kvp.Value.Equals(TileContent.Resource)).ToList())
             {
-                AIHelper.CreateCollectAction()
             }
 
             var data = StorageHelper.Read<TestClass>("Test");
