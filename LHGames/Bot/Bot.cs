@@ -26,6 +26,8 @@ namespace LHGames.Bot
         /***** PATHFINDING ******/
         private bool arrivedAtDestination;
 
+        private bool MOVEBITCH = true;
+
         /// <summary>
         /// Gets called before ExecuteTurn. This is where you get your bot's state.
         /// </summary>
@@ -43,6 +45,12 @@ namespace LHGames.Bot
         /// <returns>The action you wish to execute.</returns>
         internal string ExecuteTurn(Map map, IEnumerable<IPlayer> visiblePlayers)
         {
+            if (MOVEBITCH)
+            {
+                MOVEBITCH = false;
+                return AIHelper.CreateMoveAction(new Point(0, 1));
+            }
+
             if (PlayerInfo.CarriedResources >= PlayerInfo.CarryingCapacity)
             {
                 return WalkTowardsTile(PlayerInfo.HouseLocation, map, true); // x + 1 because reasons
@@ -255,7 +263,9 @@ namespace LHGames.Bot
             arrivedAtDestination = true;
             return AIHelper.CreateEmptyAction();
         }
+
     }
+
 }
 
 class TestClass
