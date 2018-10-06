@@ -48,13 +48,13 @@ namespace LHGames.Bot
                 _currentDirection *= -1;
             }
 
-            if(resourcePoint.X != PlayerInfo.Position.X){
+            if(resourcePoint.X != PlayerInfo.Position.X && foundResource){
                 int diffX = resourcePoint.X - PlayerInfo.Position.X;
                 return AIHelper.CreateMoveAction(new Point(diffX, 0));
 
             }
 
-            if(resourcePoint.Y != PlayerInfo.Position.Y){
+            if(resourcePoint.Y != PlayerInfo.Position.Y && foundResource){
                 int diffY = resourcePoint.Y - PlayerInfo.Position.Y;
                 return AIHelper.CreateMoveAction(new Point(0, diffY));
 
@@ -62,6 +62,8 @@ namespace LHGames.Bot
 
             var data = StorageHelper.Read<TestClass>("Test");
             Console.WriteLine(data?.Test);
+            Console.WriteLine(foundResource);
+            Console.WriteLine(resourcePoint.X.ToString(), resourcePoint.Y.ToString());
             return AIHelper.CreateMoveAction(new Point(_currentDirection, 0));
         }
 
