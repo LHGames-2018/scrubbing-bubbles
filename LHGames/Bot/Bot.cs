@@ -16,7 +16,7 @@ namespace LHGames.Bot
         private int randomDistance;
         private int distanceTravelled;
         
-        bool moving = false;
+        private bool moving = false;
 
         internal Bot() { 
             
@@ -40,12 +40,6 @@ namespace LHGames.Bot
         internal string ExecuteTurn(Map map, IEnumerable<IPlayer> visiblePlayers)
         {
             Console.WriteLine("execute turn");
-            if (map.GetTileAt(PlayerInfo.Position.X + _currentDirection, PlayerInfo.Position.Y) == TileContent.Wall)
-            {
-                _currentDirection *= -1;
-                distanceTravelled = 0;
-                moving = false;
-            }
 
             int []mineralDirection = MineralAdjacentDirection(map);
             if (mineralDirection != null)
@@ -53,38 +47,38 @@ namespace LHGames.Bot
                 return AIHelper.CreateCollectAction(new Point(mineralDirection[0], mineralDirection[1]));
             }
 
-            Console.WriteLine("moving: ", moving);
             if (!moving)
             {
                 Random rnd = new Random();
                 randomDirection = rnd.Next(1, 5);
+                Console.WriteLine("randomDirection: ", randomDirection);
                 randomDistance = rnd.Next(1, 3);
+                Console.WriteLine("randomDistance: ", randomDistance);
+                moving = true;
             }
             
             if(moving){
                 Console.WriteLine("moving");
                 switch(randomDirection){
                     case 1:
-                        distanceTravelled++;
                         if (MeleeTargetExists(map, 1, 0))
                             return AIHelper.CreateMeleeAttackAction(new Point(1, 0));
                         return AIHelper.CreateMoveAction(new Point(1, 0));
                     case 2:
-                        distanceTravelled++;
                         if (MeleeTargetExists(map, -1, 0))
                             return AIHelper.CreateMeleeAttackAction(new Point(-1, 0));
                         return AIHelper.CreateMoveAction(new Point(-1, 0));
                     case 3:
-                        distanceTravelled++;
                         if (MeleeTargetExists(map, 0, 1))
                             return AIHelper.CreateMeleeAttackAction(new Point(0, 1));
                         return AIHelper.CreateMoveAction(new Point(0, 1));
                     case 4:
-                        distanceTravelled++;
                         if (MeleeTargetExists(map, 0, -1))
                             return AIHelper.CreateMeleeAttackAction(new Point(0, -1));
                         return AIHelper.CreateMoveAction(new Point(0, -1));    
                 }
+                distanceTravelled++;
+                Console.WriteLine("distanceTravelled: ", distanceTravelled);
             }
 
             if(distanceTravelled >= randomDistance){
