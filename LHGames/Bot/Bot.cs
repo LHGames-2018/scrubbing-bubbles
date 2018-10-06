@@ -59,6 +59,10 @@ namespace LHGames.Bot
             foreach (var res in tileContents.Where(kvp => kvp.Value.Equals(TileContent.Resource)).ToList())
             {
             }
+            foreach (var wall in tileContents.Where(kvp => kvp.Value.Equals(TileContent.Resource)).ToList())
+            {
+                return AIHelper.CreateMeleeAttackAction(wall.Key);
+            }
 
             var data = StorageHelper.Read<TestClass>("Test");
             Console.WriteLine(data?.Test);
