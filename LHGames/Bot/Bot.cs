@@ -8,8 +8,11 @@ namespace LHGames.Bot
     {
         internal IPlayer PlayerInfo { get; set; }
         private int _currentDirection = 1;
-        bool foundResource = false;
-        Point resourcePoint;
+        // bool foundResource = false;
+        // Point resourcePoint;
+        private int randomDirection;
+        private int randomDistance;
+        private int distanceTravelled;
         internal Bot() { 
             
         }
@@ -64,8 +67,7 @@ namespace LHGames.Bot
 
             var data = StorageHelper.Read<TestClass>("Test");
             Console.WriteLine(data?.Test);
-            Console.WriteLine("test");
-            return AIHelper.CreateMoveAction(new Point(_currentDirection, 0));
+            return AIHelper.CreateMoveAction(new Point(0, 1));
         }
 
         /// <summary>
