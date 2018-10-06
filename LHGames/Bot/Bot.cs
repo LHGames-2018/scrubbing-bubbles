@@ -12,7 +12,7 @@ namespace LHGames.Bot
         // Point resourcePoint;
         private int randomDirection;
         private int randomDistance;
-        private int distanceTravelled;
+        private int distanceTravelled = 0;
         bool moving = false;
         internal Bot() { 
             
@@ -46,8 +46,13 @@ namespace LHGames.Bot
             if(!moving){
                 Random rnd = new Random();
                 randomDirection = rnd.Next(1,5);
-                randomDistance = rnd.Next(1,3);
+                randomDistance = rnd.Next(1,4);
                 moving = true;
+            }
+
+            if(distanceTravelled >= randomDistance){
+                moving = false;
+                distanceTravelled = 0;
             }
             
             if(moving){
@@ -68,10 +73,7 @@ namespace LHGames.Bot
                 }
             }
 
-            if(distanceTravelled >= randomDistance){
-                moving = false;
-                distanceTravelled = 0;
-            }
+            
 
             var data = StorageHelper.Read<TestClass>("Test");
             Console.WriteLine(data?.Test);
