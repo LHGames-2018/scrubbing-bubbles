@@ -43,6 +43,12 @@ namespace LHGames.Bot
                 moving = false;
             }
 
+            int []mineralDirection = MineralAdjacentDirection(map);
+            if (mineralDirection != null)
+            {
+                return AIHelper.CreateCollectAction(new Point(mineralDirection[0], mineralDirection[1]));
+            }
+
             if(!moving){
                 Random rnd = new Random();
                 randomDirection = rnd.Next(1,5);
@@ -55,15 +61,23 @@ namespace LHGames.Bot
                 switch(randomDirection){
                     case 1:
                         distanceTravelled++;
+                        if (MeleeTargetExists(map, 1, 0))
+                            return AIHelper.CreateMeleeAttackAction(new Point(1, 0));
                         return AIHelper.CreateMoveAction(new Point(1, 0));
                     case 2:
                         distanceTravelled++;
+                        if (MeleeTargetExists(map, -1, 0))
+                            return AIHelper.CreateMeleeAttackAction(new Point(-1, 0));
                         return AIHelper.CreateMoveAction(new Point(-1, 0));
                     case 3:
                         distanceTravelled++;
+                        if (MeleeTargetExists(map, 0, 1))
+                            return AIHelper.CreateMeleeAttackAction(new Point(0, 1));
                         return AIHelper.CreateMoveAction(new Point(0, 1));
                     case 4:
                         distanceTravelled++;
+                        if (MeleeTargetExists(map, 0, -1))
+                            return AIHelper.CreateMeleeAttackAction(new Point(0, -1));
                         return AIHelper.CreateMoveAction(new Point(0, -1));    
                 }
             }
@@ -83,6 +97,26 @@ namespace LHGames.Bot
         /// </summary>
         internal void AfterTurn()
         {
+        }
+
+        // Checks if there is anything to destroy in the direction to move
+        internal Boolean MeleeTargetExists(Map map, int directionX, int directionY)
+        {
+            return (map.GetTileAt(PlayerInfo.Position.X + directionX, PlayerInfo.Position.Y + directionY) == TileContent.Wall || map.GetTileAt(PlayerInfo.Position.X + directionX, PlayerInfo.Position.Y + directionY) == TileContent.Player);
+        }
+
+        // Checks if there is a mineral deposit in any adjacent tile
+        internal int[] MineralAdjacentDirection(Map map)
+        {
+            if (map.GetTileAt(PlayerInfo.Position.X + 1, PlayerInfo.Position.Y) == TileContent.Resource)
+                return new int[2] {1, 0};
+            else if (map.GetTileAt(PlayerInfo.Position.X - 1, PlayerInfo.Position.Y) == TileContent.Resource)
+                return new int[2] {-1, 0};
+            else if (map.GetTileAt(PlayerInfo.Position.X, PlayerInfo.Position.Y + 1) == TileContent.Resource)
+                return new int[2] {0, 1};
+            else if (map.GetTileAt(PlayerInfo.Position.X, PlayerInfo.Position.Y - 1) == TileContent.Resource)
+                return new int[2] {0, -1};
+            return null;
         }
     }
 }
