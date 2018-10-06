@@ -18,11 +18,11 @@ namespace LHGames.Bot
         private int previousDirection = INVALID_DIRECTION;
         private int randomDistance;
         private int distanceTravelled = 0;
-        private bool arrivedAtDestination;
         bool moving = false;
         bool movingRandom = true;
 
         /***** PATHFINDING ******/
+        private bool arrivedAtDestination;
 
         /// <summary>
         /// Gets called before ExecuteTurn. This is where you get your bot's state.
@@ -87,7 +87,9 @@ namespace LHGames.Bot
                         return AIHelper.CreateMoveAction(new Point(0, direction));
 
                     }
+
                 }
+                arrivedAtDestination = true;
             }
             else
             {
