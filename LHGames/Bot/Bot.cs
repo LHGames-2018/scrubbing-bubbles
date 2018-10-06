@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using LHGames.Helper;
 
 namespace LHGames.Bot
@@ -13,7 +15,9 @@ namespace LHGames.Bot
         private int randomDirection;
         private int randomDistance;
         private int distanceTravelled;
+        
         bool moving = false;
+
         internal Bot() { 
             
         }
@@ -49,11 +53,12 @@ namespace LHGames.Bot
                 return AIHelper.CreateCollectAction(new Point(mineralDirection[0], mineralDirection[1]));
             }
 
-            if(!moving){
+            Console.WriteLine("moving: ", moving);
+            if (!moving)
+            {
                 Random rnd = new Random();
-                randomDirection = rnd.Next(1,5);
-                randomDistance = rnd.Next(1,3);
-                moving = true;
+                randomDirection = rnd.Next(1, 5);
+                randomDistance = rnd.Next(1, 3);
             }
             
             if(moving){
@@ -89,7 +94,7 @@ namespace LHGames.Bot
 
             var data = StorageHelper.Read<TestClass>("Test");
             Console.WriteLine(data?.Test);
-            return AIHelper.CreateMoveAction(new Point(0,-1));
+            return AIHelper.CreateEmptyAction();
         }
 
         /// <summary>
