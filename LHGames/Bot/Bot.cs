@@ -58,6 +58,11 @@ namespace LHGames.Bot
 
             foreach (var res in tileContents.Where(kvp => kvp.Value.Equals(TileContent.Resource)).ToList())
             {
+                //collect every resource around player
+                if (PlayerInfo.CarriedResources < PlayerInfo.CarryingCapacity)
+                {
+                    AIHelper.CreateCollectAction(new Point(res.Key.X, res.Key.Y));
+                }
             }
 
             var data = StorageHelper.Read<TestClass>("Test");
