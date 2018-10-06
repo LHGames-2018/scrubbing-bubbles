@@ -31,39 +31,40 @@ namespace LHGames.Bot
         /// <returns>The action you wish to execute.</returns>
         internal string ExecuteTurn(Map map, IEnumerable<IPlayer> visiblePlayers)
         {
-            if(!this.foundResource){
-                for(int i = PlayerInfo.Position.X - 100; i < PlayerInfo.Position.X + 100; i++){
-                    for(int j = PlayerInfo.Position.Y - 100; j < PlayerInfo.Position.Y + 100; i++){
-                        if(map.GetTileAt(i, j) == TileContent.Resource){
-                            resourcePoint = new Point(i, j);
-                            foundResource = true;
-                        }
-                    }
-                }
+            // if(!this.foundResource){
+            //     for(int i = PlayerInfo.Position.X - 100; i < PlayerInfo.Position.X + 100; i++){
+            //         for(int j = PlayerInfo.Position.Y - 100; j < PlayerInfo.Position.Y + 100; i++){
+            //             if(map.GetTileAt(i, j) == TileContent.Resource){
+            //                 resourcePoint = new Point(i, j);
+            //                 foundResource = true;
+            //             }
+            //         }
+            //     }
 
-            }
+            // }
+
+            // if(resourcePoint.X != PlayerInfo.Position.X && foundResource){
+            //     int diffX = resourcePoint.X - PlayerInfo.Position.X;
+            //     return AIHelper.CreateMoveAction(new Point(diffX, 0));
+
+            // }
+
+            // if(resourcePoint.Y != PlayerInfo.Position.Y && foundResource){
+            //     int diffY = resourcePoint.Y - PlayerInfo.Position.Y;
+            //     return AIHelper.CreateMoveAction(new Point(0, diffY));
+
+            // }
             // TODO: Implement your AI here.
             if (map.GetTileAt(PlayerInfo.Position.X + _currentDirection, PlayerInfo.Position.Y) == TileContent.Wall)
             {
                 _currentDirection *= -1;
             }
 
-            if(resourcePoint.X != PlayerInfo.Position.X && foundResource){
-                int diffX = resourcePoint.X - PlayerInfo.Position.X;
-                return AIHelper.CreateMoveAction(new Point(diffX, 0));
-
-            }
-
-            if(resourcePoint.Y != PlayerInfo.Position.Y && foundResource){
-                int diffY = resourcePoint.Y - PlayerInfo.Position.Y;
-                return AIHelper.CreateMoveAction(new Point(0, diffY));
-
-            }
+            
 
             var data = StorageHelper.Read<TestClass>("Test");
             Console.WriteLine(data?.Test);
-            Console.WriteLine(foundResource);
-            Console.WriteLine(resourcePoint.X.ToString(), resourcePoint.Y.ToString());
+            Console.WriteLine("test");
             return AIHelper.CreateMoveAction(new Point(_currentDirection, 0));
         }
 
