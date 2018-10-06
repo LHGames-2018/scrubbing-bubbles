@@ -163,7 +163,7 @@ namespace LHGames.Bot
         }
 
         // Checks if there is anything to destroy in the direction to move
-        internal Boolean MeleeTargetExists(Map map, int directionX, int directionY)
+        internal bool MeleeTargetExists(Map map, int directionX, int directionY)
         {
             return (map.GetTileAt(PlayerInfo.Position.X + directionX, PlayerInfo.Position.Y + directionY) ==
                     TileContent.Wall ||
@@ -234,29 +234,36 @@ namespace LHGames.Bot
             {
                 var direction = deltaX > 0 ? 1 : -1; // UGLY
                 if (map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y) ==
-                    TileContent.Wall)
+                    TileContent.Wall || map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y) ==
+                                         TileContent.Player)
                 {
                     return AIHelper.CreateMeleeAttackAction(new Point(direction));
                 }
-                else
+                if (map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y) ==
+                    TileContent.Lava || map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y) ==
+                    TileContent.Player)
                 {
-                    return AIHelper.CreateMoveAction(new Point(direction));
+                    return AIHelper.CreateMoveAction(new Point(0, 1));
                 }
+                return AIHelper.CreateMoveAction(new Point(direction));
             }
 
             if (deltaY != 0)
             {
                 var direction = deltaY > 0 ? 1 : -1; // UGLY
                 if (map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y) ==
-                    TileContent.Wall)
+                    TileContent.Wall || map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y) ==
+                    TileContent.Player)
                 {
                     return AIHelper.CreateMeleeAttackAction(new Point(0, direction));
                 }
-                else
+                if (map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y) ==
+                    TileContent.Lava || map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y) ==
+                    TileContent.Player)
                 {
-                    return AIHelper.CreateMoveAction(new Point(0, direction));
-
+                    return AIHelper.CreateMoveAction(new Point(1));
                 }
+                return AIHelper.CreateMoveAction(new Point(0, direction));
 
             }
 
@@ -264,6 +271,18 @@ namespace LHGames.Bot
             return AIHelper.CreateEmptyAction();
         }
 
+        //private bool IsFullAndStuck(int direction, Map map, bool isX)
+        //{
+        //    bool stuck = false;
+
+        //    stuck = PlayerInfo.CarriedResources >= PlayerInfo.CarryingCapacity
+        //            && map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y).;
+        //    }
+        //    else
+        //    {
+                
+        //    }
+        //}
     }
 
 }
