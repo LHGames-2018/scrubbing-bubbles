@@ -8,19 +8,21 @@ namespace LHGames.Bot
 {
     internal class Bot
     {
+        public const int INVALID_DIRECTION = 5;
+        public const int MAX_RANDOM_DISTANCE = 5;
         internal IPlayer PlayerInfo { get; set; }
         private int _currentDirection = 1;
         // bool foundResource = false;
         // Point resourcePoint;
         private int randomDirection;
+        private int previousDirection = INVALID_DIRECTION;
         private int randomDistance;
-        private int distanceTravelled;
-        
-        private bool moving = false;
+        private int distanceTravelled = 0;
+        private bool arrivedAtDestination;
+        bool moving = false;
+        bool movingRandom = true;
 
-        internal Bot() { 
-            
-        }
+        /***** PATHFINDING ******/
 
         /// <summary>
         /// Gets called before ExecuteTurn. This is where you get your bot's state.
@@ -39,22 +41,92 @@ namespace LHGames.Bot
         /// <returns>The action you wish to execute.</returns>
         internal string ExecuteTurn(Map map, IEnumerable<IPlayer> visiblePlayers)
         {
-            Console.WriteLine("execute turn");
-
             int []mineralDirection = MineralAdjacentDirection(map);
             if (mineralDirection != null)
             {
                 return AIHelper.CreateCollectAction(new Point(mineralDirection[0], mineralDirection[1]));
             }
 
-            if (!moving)
+            var resource = LookForVisibleResource(map);
+
+            if (resource != null)
+            { 
+                var deltaX = resource.X - PlayerInfo.Position.X;
+                var deltaY = resource.Y - PlayerInfo.Position.Y;
+
+                if (deltaX < 0)
+                    deltaX += 1;
+                else
+                    deltaX -= 1; 
+
+                //bouger personnage
+                if (deltaX != 0)
+                {
+                    var direction = deltaX > 0 ? 1 : -1; // UGLY
+                    if (map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y) ==
+                        TileContent.Wall)
+                    {
+                        return AIHelper.CreateMeleeAttackAction(new Point(direction));
+                    }
+                    else
+                    {
+                        return AIHelper.CreateMoveAction(new Point(direction));
+                    }
+                }
+
+                if (deltaY != 0)
+                {
+                    var direction = deltaY > 0 ? 1 : -1; // UGLY
+                    if (map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y) ==
+                        TileContent.Wall)
+                    {
+                        return AIHelper.CreateMeleeAttackAction(new Point(0, direction));
+                    }
+                    else
+                    {
+                        return AIHelper.CreateMoveAction(new Point(0, direction));
+
+                    }
+                }
+            }
+            else
             {
+                if (map.GetTileAt(PlayerInfo.Position.X + _currentDirection, PlayerInfo.Position.Y) == TileContent.Wall)
+                {
+                    _currentDirection *= -1;
+                    distanceTravelled = 0;
+                    moving = false;
+                    previousDirection = INVALID_DIRECTION;
+                }
+
+                if (movingRandom)
+                {
+                return moveRandomly(map);
+                }
+
+            }
+
+            var data = StorageHelper.Read<TestClass>("Test");
+            Console.WriteLine(data?.Test);
+            return AIHelper.CreateMoveAction(new Point(0, -1));
+        }
+
+        internal string moveRandomly(Map map) {
+
+            if(!moving){
                 Random rnd = new Random();
-                randomDirection = rnd.Next(1, 5);
-                Console.WriteLine("randomDirection: ", randomDirection);
-                randomDistance = rnd.Next(1, 3);
-                Console.WriteLine("randomDistance: ", randomDistance);
+                randomDirection = rnd.Next(1,5);
+                randomDistance = rnd.Next(1,MAX_RANDOM_DISTANCE);
                 moving = true;
+
+                while(randomDirection == previousDirection){
+                    randomDirection = rnd.Next(1,5);
+                }
+            }
+
+            if(distanceTravelled >= randomDistance){
+                moving = false;
+                distanceTravelled = 0;
             }
             
             if(moving){
@@ -117,7 +189,23 @@ namespace LHGames.Bot
                 return new int[2] {0, -1};
             return null;
         }
+
+        internal Point LookForVisibleResource(Map map)
+        {
+            try
+            {
+                var firstResourceFound = map.GetVisibleTiles().First(x => x.TileType.Equals(TileContent.Resource));
+                return firstResourceFound.Position;
+            }
+            catch
+            {
+                return null;
+                //do nothing
+            }
+        }
     }
+
+
 }
 
 class TestClass
