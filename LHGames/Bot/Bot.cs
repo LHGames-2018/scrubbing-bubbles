@@ -6,14 +6,18 @@ namespace LHGames.Bot
 {
     internal class Bot
     {
+        public const int INVALID_DIRECTION = 5;
+        public const int MAX_RANDOM_DISTANCE = 5;
         internal IPlayer PlayerInfo { get; set; }
         private int _currentDirection = 1;
         // bool foundResource = false;
         // Point resourcePoint;
         private int randomDirection;
+        private int previousDirection = INVALID_DIRECTION;
         private int randomDistance;
         private int distanceTravelled = 0;
         bool moving = false;
+        bool movingRandom = true;
         internal Bot() { 
             
         }
@@ -41,13 +45,27 @@ namespace LHGames.Bot
                 _currentDirection *= -1;
                 distanceTravelled = 0;
                 moving = false;
+                previousDirection = INVALID_DIRECTION;
+            }
+            if(movingRandom){
+                return moveRandomly();
             }
 
+            var data = StorageHelper.Read<TestClass>("Test");
+            Console.WriteLine(data?.Test);
+            return AIHelper.CreateMoveAction(new Point(0,-1));
+        }
+
+        internal string moveRandomly(){
             if(!moving){
                 Random rnd = new Random();
                 randomDirection = rnd.Next(1,5);
-                randomDistance = rnd.Next(1,4);
+                randomDistance = rnd.Next(1,MAX_RANDOM_DISTANCE);
                 moving = true;
+
+                while(randomDirection == previousDirection){
+                    randomDirection = rnd.Next(1,5);
+                }
             }
 
             if(distanceTravelled >= randomDistance){
@@ -72,12 +90,7 @@ namespace LHGames.Bot
                         return AIHelper.CreateMoveAction(new Point(0, -1));    
                 }
             }
-
-            
-
-            var data = StorageHelper.Read<TestClass>("Test");
-            Console.WriteLine(data?.Test);
-            return AIHelper.CreateMoveAction(new Point(0,-1));
+            return AIHelper.CreateMoveAction(new Point(0,1));
         }
 
         /// <summary>
@@ -87,6 +100,8 @@ namespace LHGames.Bot
         {
         }
     }
+
+    
 }
 
 class TestClass
