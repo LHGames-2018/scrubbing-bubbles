@@ -8,8 +8,11 @@ namespace LHGames.Bot
     {
         internal IPlayer PlayerInfo { get; set; }
         private int _currentDirection = 1;
-
-        internal Bot() { }
+        bool foundResource = false;
+        Point resourcePoint;
+        internal Bot() { 
+            
+        }
 
         /// <summary>
         /// Gets called before ExecuteTurn. This is where you get your bot's state.
@@ -28,10 +31,33 @@ namespace LHGames.Bot
         /// <returns>The action you wish to execute.</returns>
         internal string ExecuteTurn(Map map, IEnumerable<IPlayer> visiblePlayers)
         {
+            if(!this.foundResource){
+                for(int i = PlayerInfo.Position.X - 100; i < PlayerInfo.Position.X + 100; i++){
+                    for(int j = PlayerInfo.Position.Y - 100; j < PlayerInfo.Position.Y + 100; i++){
+                        if(map.GetTileAt(i, j) == TileContent.Resource){
+                            resourcePoint = new Point(i, j);
+                            foundResource = true;
+                        }
+                    }
+                }
+
+            }
             // TODO: Implement your AI here.
             if (map.GetTileAt(PlayerInfo.Position.X + _currentDirection, PlayerInfo.Position.Y) == TileContent.Wall)
             {
                 _currentDirection *= -1;
+            }
+
+            if(resourcePoint.X != PlayerInfo.Position.X){
+                int diffX = resourcePoint.X - PlayerInfo.Position.X;
+                return AIHelper.CreateMoveAction(new Point(diffX, 0));
+
+            }
+
+            if(resourcePoint.Y != PlayerInfo.Position.Y){
+                int diffY = resourcePoint.Y - PlayerInfo.Position.Y;
+                return AIHelper.CreateMoveAction(new Point(0, diffY));
+
             }
 
             var data = StorageHelper.Read<TestClass>("Test");
