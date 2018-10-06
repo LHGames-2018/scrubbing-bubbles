@@ -10,9 +10,15 @@ namespace LHGames.Bot
     {
         internal IPlayer PlayerInfo { get; set; }
         private int _currentDirection = 1;
-        
+        // bool foundResource = false;
+        // Point resourcePoint;
+        private int randomDirection;
+        private int randomDistance;
+        private int distanceTravelled;
 
-        internal Bot() { }
+        internal Bot() { 
+            
+        }
 
         /// <summary>
         /// Gets called before ExecuteTurn. This is where you get your bot's state.
@@ -31,6 +37,29 @@ namespace LHGames.Bot
         /// <returns>The action you wish to execute.</returns>
         internal string ExecuteTurn(Map map, IEnumerable<IPlayer> visiblePlayers)
         {
+            // if(!this.foundResource){
+            //     for(int i = PlayerInfo.Position.X - 100; i < PlayerInfo.Position.X + 100; i++){
+            //         for(int j = PlayerInfo.Position.Y - 100; j < PlayerInfo.Position.Y + 100; i++){
+            //             if(map.GetTileAt(i, j) == TileContent.Resource){
+            //                 resourcePoint = new Point(i, j);
+            //                 foundResource = true;
+            //             }
+            //         }
+            //     }
+
+            // }
+
+            // if(resourcePoint.X != PlayerInfo.Position.X && foundResource){
+            //     int diffX = resourcePoint.X - PlayerInfo.Position.X;
+            //     return AIHelper.CreateMoveAction(new Point(diffX, 0));
+
+            // }
+
+            // if(resourcePoint.Y != PlayerInfo.Position.Y && foundResource){
+            //     int diffY = resourcePoint.Y - PlayerInfo.Position.Y;
+            //     return AIHelper.CreateMoveAction(new Point(0, diffY));
+
+            // }
             // TODO: Implement your AI here.
             if (map.GetTileAt(PlayerInfo.Position.X + _currentDirection, PlayerInfo.Position.Y) == TileContent.Wall)
             {
@@ -58,6 +87,11 @@ namespace LHGames.Bot
 
             foreach (var res in tileContents.Where(kvp => kvp.Value.Equals(TileContent.Resource)).ToList())
             {
+                //collect every resource around player
+                if (PlayerInfo.CarriedResources < PlayerInfo.CarryingCapacity)
+                {
+                    AIHelper.CreateCollectAction(new Point(res.Key.X - x, res.Key.Y - y));
+                }
             }
             foreach (var wall in tileContents.Where(kvp => kvp.Value.Equals(TileContent.Resource)).ToList())
             {
@@ -66,7 +100,7 @@ namespace LHGames.Bot
 
             var data = StorageHelper.Read<TestClass>("Test");
             Console.WriteLine(data?.Test);
-            return AIHelper.CreateMoveAction(new Point(_currentDirection, 0));
+            return AIHelper.CreateMoveAction(new Point(0, 1));
         }
 
         /// <summary>
