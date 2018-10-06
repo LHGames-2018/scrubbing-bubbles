@@ -181,8 +181,22 @@ namespace LHGames.Bot
         {
             try
             {
-                var firstResourceFound = map.GetVisibleTiles().First(x => x.TileType.Equals(TileContent.Resource));
-                return firstResourceFound.Position;
+                var allTiles = map.GetVisibleTiles();
+                var closestTile = map.GetVisibleTiles().First(x => x.TileType.Equals(TileContent.Resource));
+                int closestDistance = Math.Abs(closestTile.Position.X - PlayerInfo.Position.X) + Math.Abs(closestTile.Position.Y - PlayerInfo.Position.Y);
+                foreach (var tile in allTiles)
+                {
+                    if(tile.TileType.Equals(TileContent.Resource))
+                    {
+                        int tileDistance = Math.Abs(tile.Position.X - PlayerInfo.Position.X) + Math.Abs(tile.Position.Y - PlayerInfo.Position.Y);
+                        if (tileDistance < closestDistance)
+                        {
+                            closestDistance = tileDistance;
+                            closestTile = tile;
+                        }
+                    }
+                }
+                return closestTile.Position;
             }
             catch
             {
