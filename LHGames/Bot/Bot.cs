@@ -45,7 +45,7 @@ namespace LHGames.Bot
         {
             if (PlayerInfo.CarriedResources >= PlayerInfo.CarryingCapacity)
             {
-                WalkTowardsTile(PlayerInfo.HouseLocation, map, true); // x + 1 because reasons
+                return WalkTowardsTile(PlayerInfo.HouseLocation, map, true); // x + 1 because reasons
             }
 
             int[] mineralDirection = MineralAdjacentDirection(map);
@@ -61,7 +61,7 @@ namespace LHGames.Bot
 
                 if (resource != null)
                 {
-                    WalkTowardsTile(new Point(resource.X, resource.Y), map, false);
+                    return WalkTowardsTile(new Point(resource.X, resource.Y), map, false);
                 }
                 // randomly walk
                 else
