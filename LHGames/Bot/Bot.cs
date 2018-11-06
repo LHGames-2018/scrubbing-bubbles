@@ -84,7 +84,6 @@ namespace LHGames.Bot
             }
 
             var data = StorageHelper.Read<TestClass>("Test");
-            Console.WriteLine(data?.Test);
             return AIHelper.CreateMoveAction(new Point(0, -1));
         }
 
@@ -112,7 +111,6 @@ namespace LHGames.Bot
 
             if (moving)
             {
-                Console.WriteLine("moving");
                 switch (randomDirection)
                 {
                     case 1:
@@ -134,7 +132,6 @@ namespace LHGames.Bot
                 }
 
                 distanceTravelled++;
-                Console.WriteLine("distanceTravelled: ", distanceTravelled);
             }
 
             if (distanceTravelled >= randomDistance)
@@ -144,7 +141,6 @@ namespace LHGames.Bot
             }
 
             var data = StorageHelper.Read<TestClass>("Test");
-            Console.WriteLine(data?.Test);
             return AIHelper.CreateEmptyAction();
         }
 
