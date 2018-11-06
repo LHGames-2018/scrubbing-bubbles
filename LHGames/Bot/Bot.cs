@@ -14,8 +14,6 @@ namespace LHGames.Bot
 
         private int _currentDirection = 1;
 
-        // bool foundResource = false;
-        // Point resourcePoint;
         private int randomDirection;
         private int previousDirection = INVALID_DIRECTION;
         private int randomDistance;
@@ -45,17 +43,9 @@ namespace LHGames.Bot
         /// <returns>The action you wish to execute.</returns>
         internal string ExecuteTurn(Map map, IEnumerable<IPlayer> visiblePlayers)
         {
-            if (moveCounter == 10)
-            {
-                moveCounter = 0;
-                return AIHelper.CreateMoveAction(new Point(0, 1));
-            }
-
-            moveCounter++;
-
             if (PlayerInfo.CarriedResources >= PlayerInfo.CarryingCapacity)
             {
-                return WalkTowardsTile(PlayerInfo.HouseLocation, map, true); // x + 1 because reasons
+                return WalkTowardsTile(PlayerInfo.HouseLocation, map, true); 
             }
 
             int[] mineralDirection = MineralAdjacentDirection(map);
@@ -73,7 +63,8 @@ namespace LHGames.Bot
                 {
                     return WalkTowardsTile(new Point(resource.X, resource.Y), map, false);
                 }
-                // randomly walk
+                
+                // randomly walk if no resource detected within range 
                 else
                 {
                     if (map.GetTileAt(PlayerInfo.Position.X + _currentDirection, PlayerInfo.Position.Y) ==
@@ -189,7 +180,7 @@ namespace LHGames.Bot
 
         internal Point LookForVisibleResource(Map map)
         {
-            try
+            try 
             {
                 var allTiles = map.GetVisibleTiles();
                 var closestTile = map.GetVisibleTiles().First(x => x.TileType.Equals(TileContent.Resource));
@@ -231,7 +222,7 @@ namespace LHGames.Bot
                     deltaX -= 1;
             }
 
-            //bouger personnage
+            //moving character
             if (deltaX != 0)
             {
                 var direction = deltaX > 0 ? 1 : -1; // UGLY
@@ -252,7 +243,7 @@ namespace LHGames.Bot
 
             if (deltaY != 0)
             {
-                var direction = deltaY > 0 ? 1 : -1; // UGLY
+                var direction = deltaY > 0 ? 1 : -1; 
                 if (map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y) ==
                     TileContent.Wall || map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y) ==
                     TileContent.Player)
@@ -268,23 +259,11 @@ namespace LHGames.Bot
                 return AIHelper.CreateMoveAction(new Point(0, direction));
 
             }
-
+            
             arrivedAtDestination = true;
             return AIHelper.CreateEmptyAction();
         }
-
-        //private bool IsFullAndStuck(int direction, Map map, bool isX)
-        //{
-        //    bool stuck = false;
-
-        //    stuck = PlayerInfo.CarriedResources >= PlayerInfo.CarryingCapacity
-        //            && map.GetTileAt(PlayerInfo.Position.X + direction, PlayerInfo.Position.Y).;
-        //    }
-        //    else
-        //    {
-                
-        //    }
-        //}
+        
     }
 
 }
